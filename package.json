@@ -23,7 +23,7 @@
   ],
   "files": [
     "dist",
-    "src/components"
+    "src"
   ],
   "publishConfig": {
     "access": "public"
