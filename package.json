@@ -25,6 +25,9 @@
     "dist",
     "src/components"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
