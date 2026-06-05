@@ -2,17 +2,53 @@
   "name": "@thenewdynamic/astro-seo",
   "version": "0.1.0",
   "type": "module",
-  "exports": {
-    ".": "./src/index.ts",
-    "./SEO.astro": "./src/components/SEO.astro",
-    "./core": "./src/core/index.ts"
+  "description": "Astro integration for SEO meta tags and structured data",
+  "author": "The New Dynamic",
+  "license": "MIT",
+  "homepage": "https://github.com/theNewDynamic/astro-seo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theNewDynamic/astro-seo.git"
   },
-  "dependencies": {
-    "astro-seo": "^0.7.2"
+  "bugs": {
+    "url": "https://github.com/theNewDynamic/astro-seo/issues"
+  },
+  "keywords": [
+    "astro",
+    "astro-integration",
+    "seo",
+    "meta-tags",
+    "structured-data",
+    "schema-org"
+  ],
+  "files": [
+    "dist",
+    "src/components"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./SEO.astro": "./src/components/SEO.astro",
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "astro": "^4.14.0",
+    "typescript": "^5.0.0"
   },
   "peerDependencies": {
     "astro": ">=4.14.0"
   },
-  "keywords": ["astro", "seo", "astro-integration"],
-  "license": "MIT"
+  "dependencies": {
+    "astro-seo": "^0.7.2"
+  }
 }
