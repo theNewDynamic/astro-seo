@@ -42,9 +42,11 @@ export default function tndSeo(options: TndSeoOptions = {}): AstroIntegration {
               `import userConfig from '${configFilePath}'`,
               `import { createSeoUtils } from '${coreModulePath}'`,
               `const astroSite = ${astroSite ? `'${astroSite}'` : 'undefined'}`,
+              `const defaultIsProd = () => import.meta.env.PROD`,
               `const config = userConfig || {}`,
               `config.defaults = config.defaults || {}`,
               `if (astroSite && !config.defaults.url) config.defaults.url = astroSite`,
+              `if (!config.isProd) config.isProd = defaultIsProd`,
               `export const { getData, getMetasData, getStructuredData } = createSeoUtils(config)`,
             ].join('\n')
           },

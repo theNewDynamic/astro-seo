@@ -76,6 +76,8 @@ export default {
   },
   resolveImage: (image, opts) => getImageURL(image, opts),
   transformEntry: (entry) => ({ /* overrides */ }),
+  // Optional — detect production mode (defaults to import.meta.env.PROD)
+  isProd: () => process.env.NODE_ENV === 'production',
 } satisfies SeoUserConfig
 ```
 
@@ -130,6 +132,19 @@ export default {
 ```
 
 If not set, the integration will throw an error at startup.
+
+## Production detection
+
+By default, the integration detects production mode via `import.meta.env.PROD` (Vite's built-in). This controls whether pages are indexed (`noindex` is set during preview/draft modes).
+
+To use a custom detection method:
+
+```ts
+export default {
+  isProd: () => process.env.NODE_ENV === 'production',
+  // or any other method
+}
+```
 
 ## TODO
 

@@ -2,7 +2,7 @@ import type { SeoUserConfig, SeoEntry, SeoData } from '../types.js'
 import { escapeString, makeAbsUrl, isHome, getExcerpt } from '../utils.js'
 
 export const makeGetData = (config: SeoUserConfig = {}) => (entry: SeoEntry): SeoData => {
-  const { resolveImage, transformEntry } = config
+  const { resolveImage, transformEntry, isProd } = config
   const urlInput = config.defaults?.url
   const baseURL = typeof urlInput === 'string' ? urlInput : (urlInput as any)?.toString?.()
   const absUrl = baseURL ? makeAbsUrl(baseURL) : undefined
@@ -12,7 +12,6 @@ export const makeGetData = (config: SeoUserConfig = {}) => (entry: SeoEntry): Se
     description: defaultsDescription,
     image: defaultsImage,
     seo: { twitterHandle: defaultsTwitterHandle } = {},
-    prod,
   } = config.defaults ?? {}
 
   let {
@@ -49,7 +48,7 @@ export const makeGetData = (config: SeoUserConfig = {}) => (entry: SeoEntry): Se
   type = _type === 'post' ? 'article' : 'website'
   url = url && absUrl ? absUrl(url) || undefined : undefined
 
-  const isPrivate = seoPrivate || !(prod?.() ?? true)
+  const isPrivate = seoPrivate || !(isProd?.() ?? true)
   const canonical = seoCanonical || url
 
   // Title: seo > entry > defaults > "Website"

@@ -38,6 +38,12 @@ export default {
     title: 'My Site',
     description: 'A brief site description',
   },
+  // Optional — customize image resolution (e.g., Sanity)
+  resolveImage: (image) => `https://cdn.example.com/${image.src}`,
+  // Optional — override SEO fields per content type
+  transformEntry: (entry) => ({ /* ... */ }),
+  // Optional — detect production mode (defaults to import.meta.env.PROD)
+  isProd: () => process.env.NODE_ENV === 'production',
 } satisfies SeoUserConfig
 ```
 

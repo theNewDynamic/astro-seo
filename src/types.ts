@@ -7,7 +7,6 @@ export interface DefaultsConfig {
     title?: string
     twitterHandle?: string
   }
-  prod?: () => boolean
 }
 
 export interface ImageOptions {
@@ -79,6 +78,7 @@ export interface SeoUserConfig {
   defaults?: DefaultsConfig
   resolveImage?: (image: Record<string, unknown>, opts?: ImageOptions) => string
   transformEntry?: (entry: SeoEntry) => Partial<SeoData>
+  isProd?: () => boolean
 }
 
 export interface SeoUtils {
