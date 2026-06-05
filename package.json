@@ -1,6 +1,6 @@
 {
   "name": "@thenewdynamic/astro-seo",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Astro integration for SEO meta tags and structured data",
   "author": "The New Dynamic",
