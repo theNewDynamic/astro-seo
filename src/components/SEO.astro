@@ -1,0 +1,15 @@
+---
+import { SEO as AstroSEO } from 'astro-seo'
+import { getMetasData, getStructuredData } from 'virtual:tnd/seo'
+import type { SeoEntry } from '../types.js'
+
+interface Props {
+  entry: SeoEntry
+}
+
+const { entry } = Astro.props
+const metasData = getMetasData(entry)
+const structuredData = getStructuredData(entry)
+---
+<AstroSEO {...metasData} />
+<script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />

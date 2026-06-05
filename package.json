@@ -1,0 +1,18 @@
+{
+  "name": "@thenewdynamic/astro-seo",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./SEO.astro": "./src/components/SEO.astro",
+    "./core": "./src/core/index.ts"
+  },
+  "dependencies": {
+    "astro-seo": "^0.7.2"
+  },
+  "peerDependencies": {
+    "astro": ">=4.14.0"
+  },
+  "keywords": ["astro", "seo", "astro-integration"],
+  "license": "MIT"
+}
