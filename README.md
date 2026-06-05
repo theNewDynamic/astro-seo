@@ -23,6 +23,7 @@ npm install @thenewdynamic/astro-seo
 import tndSeo from '@thenewdynamic/astro-seo'
 
 export default defineConfig({
+  site: 'https://example.com',
   integrations: [tndSeo()]
 })
 ```
@@ -32,7 +33,11 @@ export default defineConfig({
 import type { SeoUserConfig } from '@thenewdynamic/astro-seo'
 
 export default {
-  site: new URL('https://example.com'),
+  defaults: {
+    image: '/og-image.png', // Required — default OG image
+    title: 'My Site',
+    description: 'A brief site description',
+  },
 } satisfies SeoUserConfig
 ```
 

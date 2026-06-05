@@ -1,8 +1,8 @@
-export interface SiteConfig {
-  url: string
-  title: string
+export interface DefaultsConfig {
+  url?: string
+  image: string | Record<string, unknown>
+  title?: string
   description?: string
-  image?: string | Record<string, unknown>
   seo?: {
     title?: string
     twitterHandle?: string
@@ -76,7 +76,7 @@ export interface SeoData {
 }
 
 export interface SeoUserConfig {
-  site: SiteConfig
+  defaults?: DefaultsConfig
   resolveImage?: (image: Record<string, unknown>, opts?: ImageOptions) => string
   transformEntry?: (entry: SeoEntry) => Partial<SeoData>
 }

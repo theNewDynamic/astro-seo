@@ -19,11 +19,13 @@ declare module 'virtual:tnd/seo' {
 export default function tndSeo(options: TndSeoOptions = {}): AstroIntegration {
   let configFilePath: string
   let coreModulePath: string
+  let astroSite: string | undefined
 
   return {
     name: '@thenewdynamic/astro-seo',
     hooks: {
       'astro:config:setup': ({ config, updateConfig }) => {
+        astroSite = config.site?.toString()
         const root = fileURLToPath(config.root)
         const userConfigPath = options.configPath ?? './seo.config'
         configFilePath = resolve(root, userConfigPath)
@@ -39,7 +41,11 @@ export default function tndSeo(options: TndSeoOptions = {}): AstroIntegration {
             return [
               `import userConfig from '${configFilePath}'`,
               `import { createSeoUtils } from '${coreModulePath}'`,
-              `export const { getData, getMetasData, getStructuredData } = createSeoUtils(userConfig)`,
+              `const astroSite = ${astroSite ? `'${astroSite}'` : 'undefined'}`,
+              `const config = userConfig || {}`,
+              `config.defaults = config.defaults || {}`,
+              `if (astroSite && !config.defaults.url) config.defaults.url = astroSite`,
+              `export const { getData, getMetasData, getStructuredData } = createSeoUtils(config)`,
             ].join('\n')
           },
         }

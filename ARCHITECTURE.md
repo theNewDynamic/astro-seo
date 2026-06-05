@@ -4,7 +4,18 @@ An Astro integration that provides SEO meta tags and structured data for Astro p
 
 ## How it works
 
-The integration registers a Vite virtual module (`virtual:tnd/seo`) that exposes three pre-configured utilities: `getData`, `getMetasData`, `getStructuredData`. These are configured at startup from a `seo.config.ts` file in the consuming project's root.
+The integration registers a Vite virtual module (`virtual:tnd/seo`) that exposes three pre-configured utilities: `getData`, `getMetasData`, `getStructuredData`. These are configured at startup from a `seo.config.ts` file in the consuming project's root (or an empty config if not provided).
+
+**URL resolution flow:**
+1. Use `defaults.url` from `seo.config.ts` if provided
+2. Otherwise, use `site` from `astro.config.mjs`
+3. If neither is set, the integration still works — just without absolute URL resolution
+
+**Title resolution flow:**
+1. Entry SEO title
+2. Entry title
+3. `defaults.title` from `seo.config.ts`
+4. "Website" (hardcoded fallback)
 
 The `<SEO>` component (exported at `@thenewdynamic/astro-seo/SEO.astro`) imports from the virtual module and renders both the meta tags and the JSON-LD structured data script in one shot.
 
@@ -48,6 +59,7 @@ src/
 ```js
 import tndSeo from '@thenewdynamic/astro-seo'
 export default defineConfig({
+  site: 'https://example.com',
   integrations: [tndSeo()]
 })
 ```
@@ -55,16 +67,37 @@ export default defineConfig({
 **`seo.config.ts`** (project root, read automatically)
 ```ts
 import type { SeoUserConfig } from '@thenewdynamic/astro-seo'
-import { getImageURL } from './src/util/sanity/image'
-import site from './src/data/site'
 
 export default {
-  site,
-  resolveImage: (image, opts) => getImageURL(image, opts),
-  transformEntry: (entry) => {
-    return {}
+  defaults: {
+    image: '/og-image.png', // Required — default OG image
+    title: 'My Site',
+    description: 'My site description',
   },
+  resolveImage: (image, opts) => getImageURL(image, opts),
+  transformEntry: (entry) => ({ /* overrides */ }),
 } satisfies SeoUserConfig
+```
+
+**Minimal setup:**
+```ts
+// seo.config.ts
+export default {
+  defaults: {
+    image: '/og-image.png', // Required
+    title: 'My Site',       // Optional
+  }
+}
+```
+
+Then in `astro.config.mjs`:
+```js
+import tndSeo from '@thenewdynamic/astro-seo'
+
+export default defineConfig({
+  site: 'https://example.com',
+  integrations: [tndSeo()]
+})
 ```
 
 **In a layout**
@@ -81,6 +114,22 @@ import { flattenEntry } from '@thenewdynamic/astro-seo'
 ---
 <SEO entry={flattenEntry(entry)} />
 ```
+
+## Required configuration
+
+**`defaults.image` is mandatory**
+
+The underlying `astro-seo` package requires an OG image for all pages. This ensures every page has proper social media preview metadata. Provide a fallback image URL:
+
+```ts
+export default {
+  defaults: {
+    image: '/og-image.png', // URL path or Sanity image object
+  },
+}
+```
+
+If not set, the integration will throw an error at startup.
 
 ## TODO
 

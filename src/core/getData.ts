@@ -1,21 +1,22 @@
 import type { SeoUserConfig, SeoEntry, SeoData } from '../types.js'
 import { escapeString, makeAbsUrl, isHome, getExcerpt } from '../utils.js'
 
-export const makeGetData = (config: SeoUserConfig) => (entry: SeoEntry): SeoData => {
-  const { site, resolveImage, transformEntry } = config
-  const { url: baseURL } = site
-  const absUrl = makeAbsUrl(baseURL)
+export const makeGetData = (config: SeoUserConfig = {}) => (entry: SeoEntry): SeoData => {
+  const { resolveImage, transformEntry } = config
+  const urlInput = config.defaults?.url
+  const baseURL = typeof urlInput === 'string' ? urlInput : (urlInput as any)?.toString?.()
+  const absUrl = baseURL ? makeAbsUrl(baseURL) : undefined
 
   const {
-    title: siteTitle,
-    description: siteDescription,
-    image: siteImage,
-    seo: { twitterHandle: siteTwitterHandle } = {},
+    title: defaultsTitle,
+    description: defaultsDescription,
+    image: defaultsImage,
+    seo: { twitterHandle: defaultsTwitterHandle } = {},
     prod,
-  } = site
+  } = config.defaults ?? {}
 
   let {
-    title = 'Missing',
+    title = 'Website',
     type = 'website',
     _type,
     _updatedAt,
@@ -32,8 +33,8 @@ export const makeGetData = (config: SeoUserConfig) => (entry: SeoEntry): SeoData
     bodyText,
     translation,
     twitterCard = 'summary_large_image',
-    twitterHandle = siteTwitterHandle,
-    twitterCreatorHandle = siteTwitterHandle,
+    twitterHandle = defaultsTwitterHandle,
+    twitterCreatorHandle = defaultsTwitterHandle,
   } = entry
 
   const seo = entry.seo || {}
@@ -46,17 +47,19 @@ export const makeGetData = (config: SeoUserConfig) => (entry: SeoEntry): SeoData
   } = seo
 
   type = _type === 'post' ? 'article' : 'website'
-  url = url ? absUrl(url) || undefined : undefined
+  url = url && absUrl ? absUrl(url) || undefined : undefined
 
   const isPrivate = seoPrivate || !(prod?.() ?? true)
   const canonical = seoCanonical || url
 
+  // Title: seo > entry > defaults > "Website"
   title = seoTitle
     ? seoTitle
-    : title
+    : title !== 'Website'
     ? escapeString(title as string)
-    : siteTitle ?? 'Missing'
+    : defaultsTitle || 'Website'
 
+  // Description: seo > entry text > defaults > ""
   description = seoDescription
     ? seoDescription
     : descriptionText
@@ -65,19 +68,19 @@ export const makeGetData = (config: SeoUserConfig) => (entry: SeoEntry): SeoData
     ? escapeString(description)
     : bodyText
     ? getExcerpt(bodyText, 300)
-    : siteDescription
+    : defaultsDescription || ''
 
   let ogTitle = title
 
-  if (siteTitle && !isHome(entry)) {
-    title = `${title} | ${siteTitle}`
+  if (defaultsTitle && !isHome(entry)) {
+    title = `${title} | ${defaultsTitle}`
   } else if (isHome(entry)) {
-    title = site.title
-    ogTitle = site.title
+    title = defaultsTitle || title
+    ogTitle = title
   }
 
-  const resolvedSiteImage = siteImage
-  image = seoImage || image || resolvedSiteImage
+  const resolvedDefaultsImage = defaultsImage
+  image = seoImage || image || resolvedDefaultsImage
 
   let imageAlt = ''
 
@@ -87,7 +90,7 @@ export const makeGetData = (config: SeoUserConfig) => (entry: SeoEntry): SeoData
     image = resolveImage
       ? resolveImage(img, { width: 1000 })
       : (img.src ?? img.url ?? '') as string
-  } else if (image && typeof image === 'string') {
+  } else if (image && typeof image === 'string' && baseURL) {
     image = baseURL + image
   }
 
@@ -102,7 +105,7 @@ export const makeGetData = (config: SeoUserConfig) => (entry: SeoEntry): SeoData
     publishedTime: date,
     modifiedTime: _updatedAt,
     authors: authors?.length
-      ? authors.map((a) => ({ name: a.title ?? a.name ?? '', url: a.url ? absUrl(a.url) : false }))
+      ? authors.map((a) => ({ name: a.title ?? a.name ?? '', url: a.url && absUrl ? absUrl(a.url) : false }))
       : [],
     description,
     canonical,
@@ -117,7 +120,7 @@ export const makeGetData = (config: SeoUserConfig) => (entry: SeoEntry): SeoData
     locale: locale as string,
     localeAlternate,
     languageAlternates,
-    siteTitle: siteTitle ?? '',
+    siteTitle: defaultsTitle || '',
     twitterCard: twitterCard as string,
     twitterHandle: twitterHandle as string | undefined,
     twitterCreatorHandle: twitterCreatorHandle as string | undefined,

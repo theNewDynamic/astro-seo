@@ -41,11 +41,13 @@
   },
   "scripts": {
     "build": "tsc",
+    "dev": "tsc --watch",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "astro": "^4.14.0",
+    "esbuild": "^0.28.0",
     "typescript": "^5.0.0"
   },
   "peerDependencies": {
