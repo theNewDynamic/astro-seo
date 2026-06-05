@@ -146,6 +146,108 @@ export default {
 }
 ```
 
+## Data mapping with `transformEntry`
+
+The package generates structured data (schema.org JSON-LD) based on content type. Different content types require different fields. If your data model doesn't match the expected shape, use `transformEntry` to map it.
+
+### Expected field names by content type
+
+**Any content (basic SEO):**
+```ts
+{
+  title?: string
+  description?: string
+  image?: string | object
+  url?: string
+}
+```
+
+**Events** (generates `Event` schema):
+```ts
+{
+  _type: 'event'
+  timeStart: string        // ISO 8601 (required for Event schema)
+  timeEnd?: string         // ISO 8601
+  venue?: object            // Venue details
+}
+```
+
+**Articles** (generates `Article` schema):
+```ts
+{
+  _type: 'article'
+  _updatedAt?: string       // ISO 8601 (becomes dateModified)
+  authors?: Array<{
+    name: string
+    url?: string
+  }>
+}
+```
+
+### Mapping example
+
+If your CMS uses different field names:
+
+```ts
+// seo.config.ts
+export default {
+  defaults: { image: '/og-image.png' },
+  transformEntry: (entry) => {
+    // Event mapping
+    if (entry._type === 'event') {
+      return {
+        title: entry.name,                 // Your field → expected field
+        description: entry.summary,
+        image: entry.poster,
+        timeStart: entry.startDate,       // CRITICAL: ISO 8601 format
+        timeEnd: entry.endDate,
+        venue: entry.location,
+      }
+    }
+
+    // Article mapping
+    if (entry._type === 'article') {
+      return {
+        title: entry.headline,
+        description: entry.excerpt,
+        _updatedAt: entry.lastModified,
+        authors: entry.contributors?.map(c => ({
+          name: c.name,
+          url: c.website,
+        })),
+      }
+    }
+
+    // Default: no mapping needed
+    return {}
+  }
+}
+```
+
+**Key points:**
+- `transformEntry` returns a *partial* `SeoData` — only specify overrides
+- Output is merged with computed entry data (transformEntry has precedence)
+- Use for field name mapping, type conversions, or content restructuring
+- No mapping needed if your field names already match expected shape
+
+### Date/time format requirements
+
+For structured data to generate correctly, dates must be ISO 8601 strings:
+
+```ts
+{
+  timeStart: '2025-06-15T10:00:00Z'      // ✓ Correct
+  timeStart: new Date('2025-06-15')      // ✗ Wrong — convert to ISO first
+  timeStart: '2025-06-15'                 // ✓ Also works (date-only format)
+}
+```
+
+Map during `transformEntry`:
+
+```ts
+timeStart: entry.eventDate?.toISOString?.()
+```
+
 ## TODO
 
 - **Build step**: the package currently ships TypeScript source. A `tsup` or `tsc` build targeting `dist/` is needed before publishing to npm. Update `package.json` exports to point at `dist/`.

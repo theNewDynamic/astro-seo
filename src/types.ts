@@ -20,8 +20,8 @@ export interface SeoEntry {
   title?: string
   type?: string
   _updatedAt?: string
-  time_start?: string
-  time_end?: string
+  timeStart?: string
+  timeEnd?: string
   venue?: unknown
   date?: string
   url?: string

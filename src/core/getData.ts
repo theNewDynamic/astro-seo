@@ -19,8 +19,8 @@ export const makeGetData = (config: SeoUserConfig = {}) => (entry: SeoEntry): Se
     type = 'website',
     _type,
     _updatedAt,
-    time_start,
-    time_end,
+    timeStart,
+    timeEnd,
     venue,
     date,
     url,
@@ -124,8 +124,8 @@ export const makeGetData = (config: SeoUserConfig = {}) => (entry: SeoEntry): Se
     twitterHandle: twitterHandle as string | undefined,
     twitterCreatorHandle: twitterCreatorHandle as string | undefined,
     venue,
-    timeStart: time_start,
-    timeEnd: time_end,
+    timeStart,
+    timeEnd,
   }
 
   if (transformEntry) {
