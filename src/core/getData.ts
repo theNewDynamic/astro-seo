@@ -11,7 +11,7 @@ export const makeGetData = (config: SeoUserConfig = {}) => (entry: SeoEntry): Se
     title: defaultsTitle,
     description: defaultsDescription,
     image: defaultsImage,
-    seo: { twitterHandle: defaultsTwitterHandle } = {},
+    twitterHandle: defaultsTwitterHandle
   } = config.defaults ?? {}
 
   let {
@@ -122,7 +122,7 @@ export const makeGetData = (config: SeoUserConfig = {}) => (entry: SeoEntry): Se
     siteTitle: defaultsTitle || '',
     twitterCard: twitterCard as string,
     twitterHandle: twitterHandle as string | undefined,
-    twitterCreatorHandle: twitterCreatorHandle as string | undefined,
+    twitterCreatorHandle: twitterHandle as string | undefined,
     venue,
     timeStart,
     timeEnd,

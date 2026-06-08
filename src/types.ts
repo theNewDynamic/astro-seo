@@ -3,10 +3,7 @@ export interface DefaultsConfig {
   image: string | Record<string, unknown>
   title?: string
   description?: string
-  seo?: {
-    title?: string
-    twitterHandle?: string
-  }
+  twitterHandle?: string
 }
 
 export interface ImageOptions {
