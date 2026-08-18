@@ -1,9 +1,10 @@
-import type { SeoEntry } from '../types.js'
+import type { SeoEntry, SeoUserConfig } from '../types.js'
 import type { makeGetData } from './getData.js'
 
 export const makeGetMetasData =
-  (getData: ReturnType<typeof makeGetData>) =>
+  (getData: ReturnType<typeof makeGetData>, extend?: SeoUserConfig['extend']) =>
   (entry: SeoEntry): Record<string, unknown> => {
+    const data = getData(entry)
     const {
       title,
       description,
@@ -26,8 +27,12 @@ export const makeGetMetasData =
       twitterCard,
       twitterHandle,
       twitterCreatorHandle,
-    } = getData(entry)
+    } = data
 
+    const article =
+      type === 'article'
+        ? { publishedTime, modifiedTime, authors: authors.map((a) => a.name) }
+        : undefined
     return {
       title,
       description,
@@ -52,19 +57,17 @@ export const makeGetMetasData =
         image: {
           alt: imageAlt,
         },
-        ...(type === 'article'
-          ? {
-              publishedTime,
-              modifiedTime,
-              authors: authors.map((a) => a.name),
-            }
-          : {}),
+        article,
       },
       twitter: {
+        title,
         description,
         card: twitterCard,
         site: twitterHandle ? '@' + twitterHandle : undefined,
         creator: twitterCreatorHandle ? '@' + twitterCreatorHandle : undefined,
+        image,
+        imageAlt,
       },
+      extend: extend?.(entry, data),
     }
   }

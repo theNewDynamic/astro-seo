@@ -71,10 +71,16 @@ export interface SeoData {
   timeEnd?: string
 }
 
+export interface ExtendedTags {
+  meta?: Record<string, unknown>[]
+  link?: Record<string, unknown>[]
+}
+
 export interface SeoUserConfig {
   defaults?: DefaultsConfig
   resolveImage?: (image: Record<string, unknown>, opts?: ImageOptions) => string
   transformEntry?: (entry: SeoEntry) => Partial<SeoData>
+  extend?: (entry: SeoEntry, data: SeoData) => ExtendedTags
   isProd?: () => boolean
 }
 

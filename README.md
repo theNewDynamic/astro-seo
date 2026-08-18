@@ -9,6 +9,7 @@ An Astro integration for SEO meta tags and structured data. Wraps `astro-seo` in
 - **Virtual module configuration** — centralized setup via `seo.config.ts`
 - **Flexible image resolution** — customize how images are transformed for meta tags
 - **Per-entry transforms** — override SEO fields by content type
+- **Extra meta/link tags** — add custom tags built from the resolved SEO data
 
 ## Installation
 
@@ -42,6 +43,8 @@ export default {
   resolveImage: (image) => `https://cdn.example.com/${image.src}`,
   // Optional — override SEO fields per content type
   transformEntry: (entry) => ({ /* ... */ }),
+  // Optional — add custom meta/link tags from the resolved SEO data
+  extend: (entry, data) => ({ /* ... */ }),
   // Optional — detect production mode (defaults to import.meta.env.PROD)
   isProd: () => process.env.NODE_ENV === 'production',
 } satisfies SeoUserConfig
@@ -130,6 +133,28 @@ export default {
 ```
 
 The package merges `transformEntry` output with your entry data, so you only need to override fields that differ.
+
+### Adding custom meta or link tags
+
+`transformEntry` runs before SEO fields are resolved, so it can't see computed values like `ogTitle` or the final resolved `image` URL. If you need to add extra `<meta>` or `<link>` tags built from those resolved values, use `extend` instead. It's called with two arguments, and its return value is passed straight through to `astro-seo`'s `extend` prop:
+
+- `entry` — the raw entry as passed to `<SEO entry={entry} />`, untouched by any resolution or `transformEntry` mapping
+- `data` — the fully resolved `SeoData` (same shape as `getData(entry)` returns): `ogTitle`, resolved `image`, `canonical`, etc.
+
+```ts
+// seo.config.ts
+export default {
+  defaults: { image: '/og-image.png' },
+  extend: (entry, data) => ({
+    meta: [
+      { name: 'my:title', content: data.ogTitle },
+    ],
+    link: [
+      { rel: 'alternate', type: 'application/rss+xml', href: '/rss.xml' },
+    ],
+  }),
+}
+```
 
 ### Per-entry SEO overrides
 
