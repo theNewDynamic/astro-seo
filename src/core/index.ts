@@ -10,7 +10,7 @@ export const createSeoUtils = (config: SeoUserConfig): SeoUtils => {
     )
   }
   const getData = makeGetData(config)
-  const getMetasData = makeGetMetasData(getData)
+  const getMetasData = makeGetMetasData(getData, config.extend)
   const getStructuredData = makeGetStructuredData(getData)
   return { getData, getMetasData, getStructuredData }
 }
