@@ -3,8 +3,8 @@ import type { makeGetData } from './getData.js'
 
 export const makeGetMetasData =
   (getData: ReturnType<typeof makeGetData>, extend?: SeoUserConfig['extend']) =>
-  (entry: SeoEntry): Record<string, unknown> => {
-    const data = getData(entry)
+  async (entry: SeoEntry): Promise<Record<string, unknown>> => {
+    const data = await getData(entry)
     const {
       title,
       description,

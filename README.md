@@ -39,8 +39,8 @@ export default {
     title: 'My Site',
     description: 'A brief site description',
   },
-  // Optional — customize image resolution (e.g., Sanity)
-  resolveImage: (image) => `https://cdn.example.com/${image.src}`,
+  // Optional — customize image resolution (e.g., Sanity). May be sync or async.
+  resolveImage: async (image) => await getAsyncImageUrl(image),
   // Optional — override SEO fields per content type
   transformEntry: (entry) => ({ /* ... */ }),
   // Optional — add custom meta/link tags from the resolved SEO data
@@ -52,8 +52,9 @@ export default {
 
 **In your layout**
 ```astro
+---
 import SEO from '@thenewdynamic/astro-seo/SEO.astro'
-
+---
 <SEO entry={entry} />
 ```
 

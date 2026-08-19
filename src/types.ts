@@ -78,16 +78,16 @@ export interface ExtendedTags {
 
 export interface SeoUserConfig {
   defaults?: DefaultsConfig
-  resolveImage?: (image: Record<string, unknown>, opts?: ImageOptions) => string
+  resolveImage?: (image: Record<string, unknown>, opts?: ImageOptions) => string | Promise<string>
   transformEntry?: (entry: SeoEntry) => Partial<SeoData>
   extend?: (entry: SeoEntry, data: SeoData) => ExtendedTags
   isProd?: () => boolean
 }
 
 export interface SeoUtils {
-  getData: (entry: SeoEntry) => SeoData
-  getMetasData: (entry: SeoEntry) => Record<string, unknown>
-  getStructuredData: (entry: SeoEntry) => Record<string, unknown>
+  getData: (entry: SeoEntry) => Promise<SeoData>
+  getMetasData: (entry: SeoEntry) => Promise<Record<string, unknown>>
+  getStructuredData: (entry: SeoEntry) => Promise<Record<string, unknown>>
 }
 
 export interface TndSeoOptions {

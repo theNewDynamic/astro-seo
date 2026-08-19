@@ -8,8 +8,8 @@ interface Props {
 }
 
 const { entry } = Astro.props
-const metasData = getMetasData(entry)
-const structuredData = getStructuredData(entry)
+const metasData = await getMetasData(entry)
+const structuredData = await getStructuredData(entry)
 ---
 <AstroSEO {...metasData} />
 <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />

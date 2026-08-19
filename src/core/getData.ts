@@ -1,7 +1,7 @@
 import type { SeoUserConfig, SeoEntry, SeoData } from '../types.js'
 import { escapeString, makeAbsUrl, isHome, getExcerpt } from '../utils.js'
 
-export const makeGetData = (config: SeoUserConfig = {}) => (entry: SeoEntry): SeoData => {
+export const makeGetData = (config: SeoUserConfig = {}) => async (entry: SeoEntry): Promise<SeoData> => {
   const { resolveImage, transformEntry, isProd } = config
   const urlInput = config.defaults?.url
   const baseURL = typeof urlInput === 'string' ? urlInput : (urlInput as any)?.toString?.()
@@ -87,7 +87,7 @@ export const makeGetData = (config: SeoUserConfig = {}) => (entry: SeoEntry): Se
     const img = image as Record<string, unknown>
     imageAlt = img.altText as string ?? ''
     image = resolveImage
-      ? resolveImage(img, { width: 1000 })
+      ? await resolveImage(img, { width: 1000 })
       : (img.src ?? img.url ?? '') as string
   } else if (image && typeof image === 'string' && baseURL) {
     image = baseURL + image

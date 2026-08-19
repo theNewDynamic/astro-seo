@@ -4,8 +4,8 @@ import { parseBase, parseEvent } from './sd.js'
 
 export const makeGetStructuredData =
   (getData: ReturnType<typeof makeGetData>) =>
-  (entry: SeoEntry): Record<string, unknown> => {
-    const data = getData(entry)
+  async (entry: SeoEntry): Promise<Record<string, unknown>> => {
+    const data = await getData(entry)
     let output = parseBase(data)
 
     if (data._type === 'event') {
