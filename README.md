@@ -181,6 +181,30 @@ These values take precedence over both entry fields and `defaults`.
 
 See `ARCHITECTURE.md` for detailed configuration options, API reference, and architecture notes.
 
+## Releasing
+
+1. Make sure `main` is clean and up to date, and everything you want to release is merged.
+2. Bump the version — this updates `package.json` and creates a commit + git tag (`vX.Y.Z`):
+   ```bash
+   npm version patch   # bug fixes, non-breaking changes
+   npm version minor   # new features or breaking changes (pre-1.0)
+   npm version major    # breaking changes (post-1.0)
+   ```
+3. Push the commit and the tag:
+   ```bash
+   git push --follow-tags
+   ```
+4. Publish to npm (runs `prepublishOnly`/`tsc` automatically):
+   ```bash
+   npm publish
+   ```
+5. Create the GitHub release from the pushed tag, after the npm publish succeeds:
+   ```bash
+   gh release create vX.Y.Z --generate-notes
+   ```
+
+Publish to npm before creating the GitHub release — that way a public release is never announced for a version that failed to publish.
+
 ## License
 
 MIT
