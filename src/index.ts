@@ -10,9 +10,9 @@ const RESOLVED_ID = '\0' + VIRTUAL_MODULE_ID
 const VIRTUAL_MODULE_TYPES = `
 declare module 'virtual:tnd/seo' {
   import type { SeoEntry, SeoData } from '@thenewdynamic/astro-seo'
-  export const getData: (entry: SeoEntry) => SeoData
-  export const getMetasData: (entry: SeoEntry) => Record<string, unknown>
-  export const getStructuredData: (entry: SeoEntry) => Record<string, unknown>
+  export const getData: (entry: SeoEntry) => Promise<SeoData>
+  export const getMetasData: (entry: SeoEntry) => Promise<Record<string, unknown>>
+  export const getStructuredData: (entry: SeoEntry) => Promise<Record<string, unknown>>
 }
 `
 
