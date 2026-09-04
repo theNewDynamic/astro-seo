@@ -74,7 +74,9 @@ export const makeGetData = (config: SeoUserConfig = {}) => async (entry: SeoEntr
   if (defaultsTitle && !isHome(entry)) {
     title = `${title} | ${defaultsTitle}`
   } else if (isHome(entry)) {
-    title = defaultsTitle || title
+    // seo.title still wins on the home page — only fall back to the site
+    // default (not the entry's own raw title) when there's no override.
+    title = seoTitle || defaultsTitle || title
     ogTitle = title
   }
 
