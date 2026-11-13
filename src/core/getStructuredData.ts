@@ -1,11 +1,11 @@
-import type { SeoEntry } from '../types.js'
+import type { SeoEntry, SeoContext } from '../types.js'
 import type { makeGetData } from './getData.js'
 import { parseBase, parseEvent } from './sd.js'
 
 export const makeGetStructuredData =
   (getData: ReturnType<typeof makeGetData>) =>
-  async (entry: SeoEntry): Promise<Record<string, unknown>> => {
-    const data = await getData(entry)
+  async (entry: SeoEntry, context?: SeoContext): Promise<Record<string, unknown>> => {
+    const data = await getData(entry, context)
     let output = parseBase(data)
 
     if (data._type === 'event') {

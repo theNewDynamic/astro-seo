@@ -11,6 +11,12 @@ The integration registers a Vite virtual module (`virtual:tnd/seo`) that exposes
 2. Otherwise, use `site` from `astro.config.mjs`
 3. If neither is set, the integration still works — just without absolute URL resolution
 
+**Computed defaults:** `defaults` may be a function (sync or async). `getData` calls it on first use, then reuses the result; a rejected call isn't cached, so the next page retries. Unlike a top-level `await` in `seo.config.ts`, it doesn't run while the module loads, which Cloudflare Workers forbid for network requests. A static `defaults` without `image` throws when the config loads; a function's result is checked when it resolves.
+
+**Page URL resolution flow** (`og:url`, and canonical unless `seo.canonical` is set):
+1. `entry.url`
+2. `context.pathname` — the `<SEO>` component passes `Astro.url.pathname`; direct callers of `getData(entry, context)` can pass it themselves
+
 **Title resolution flow:**
 1. Entry SEO title
 2. Entry title

@@ -5,10 +5,14 @@ export const escapeString = (string: string): string => {
   return string
 }
 
-export const makeAbsUrl = (baseURL: string) => (url: string): string | false => {
-  if (typeof url === 'undefined') return false
-  const separator = url.charAt(0) !== '/' ? '/' : ''
-  return baseURL + separator + url
+export const makeAbsUrl = (baseURL: string) => {
+  const base = baseURL.replace(/\/+$/, '')
+  return (url: string): string | false => {
+    if (typeof url === 'undefined') return false
+    if (/^https?:\/\//.test(url)) return url
+    const separator = url.charAt(0) !== '/' ? '/' : ''
+    return base + separator + url
+  }
 }
 
 export const isHome = (entry: Record<string, unknown>): boolean => {

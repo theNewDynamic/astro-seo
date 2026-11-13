@@ -1,10 +1,10 @@
-import type { SeoEntry, SeoUserConfig } from '../types.js'
+import type { SeoEntry, SeoUserConfig, SeoContext } from '../types.js'
 import type { makeGetData } from './getData.js'
 
 export const makeGetMetasData =
   (getData: ReturnType<typeof makeGetData>, extend?: SeoUserConfig['extend']) =>
-  async (entry: SeoEntry): Promise<Record<string, unknown>> => {
-    const data = await getData(entry)
+  async (entry: SeoEntry, context?: SeoContext): Promise<Record<string, unknown>> => {
+    const data = await getData(entry, context)
     const {
       title,
       description,

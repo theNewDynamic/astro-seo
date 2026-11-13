@@ -76,18 +76,34 @@ export interface ExtendedTags {
   link?: Record<string, unknown>[]
 }
 
+/**
+ * `defaults` can be computed: a function, sync or async, is called once, on the first
+ * `getData` call, instead of when the config module loads. Use it for values fetched
+ * from a CMS: a top-level `await` in `seo.config.ts` runs at module load, where
+ * Cloudflare Workers forbid network requests.
+ */
+export type DefaultsInput = DefaultsConfig | (() => DefaultsConfig | Promise<DefaultsConfig>)
+
 export interface SeoUserConfig {
-  defaults?: DefaultsConfig
+  defaults?: DefaultsInput
   resolveImage?: (image: Record<string, unknown>, opts?: ImageOptions) => string | Promise<string>
   transformEntry?: (entry: SeoEntry) => Partial<SeoData>
   extend?: (entry: SeoEntry, data: SeoData) => ExtendedTags
   isProd?: () => boolean
 }
 
+/**
+ * Request context passed alongside the entry. `pathname` (typically
+ * `Astro.url.pathname`) is used as the page URL when `entry.url` is not set.
+ */
+export interface SeoContext {
+  pathname?: string
+}
+
 export interface SeoUtils {
-  getData: (entry: SeoEntry) => Promise<SeoData>
-  getMetasData: (entry: SeoEntry) => Promise<Record<string, unknown>>
-  getStructuredData: (entry: SeoEntry) => Promise<Record<string, unknown>>
+  getData: (entry: SeoEntry, context?: SeoContext) => Promise<SeoData>
+  getMetasData: (entry: SeoEntry, context?: SeoContext) => Promise<Record<string, unknown>>
+  getStructuredData: (entry: SeoEntry, context?: SeoContext) => Promise<Record<string, unknown>>
 }
 
 export interface TndSeoOptions {

@@ -9,10 +9,10 @@ const RESOLVED_ID = '\0' + VIRTUAL_MODULE_ID
 
 const VIRTUAL_MODULE_TYPES = `
 declare module 'virtual:tnd/seo' {
-  import type { SeoEntry, SeoData } from '@thenewdynamic/astro-seo'
-  export const getData: (entry: SeoEntry) => Promise<SeoData>
-  export const getMetasData: (entry: SeoEntry) => Promise<Record<string, unknown>>
-  export const getStructuredData: (entry: SeoEntry) => Promise<Record<string, unknown>>
+  import type { SeoEntry, SeoData, SeoContext } from '@thenewdynamic/astro-seo'
+  export const getData: (entry: SeoEntry, context?: SeoContext) => Promise<SeoData>
+  export const getMetasData: (entry: SeoEntry, context?: SeoContext) => Promise<Record<string, unknown>>
+  export const getStructuredData: (entry: SeoEntry, context?: SeoContext) => Promise<Record<string, unknown>>
 }
 `
 
@@ -44,8 +44,9 @@ export default function tndSeo(options: TndSeoOptions = {}): AstroIntegration {
               `const astroSite = ${astroSite ? `'${astroSite}'` : 'undefined'}`,
               `const defaultIsProd = () => import.meta.env.PROD`,
               `const config = userConfig || {}`,
-              `config.defaults = config.defaults || {}`,
-              `if (astroSite && !config.defaults.url) config.defaults.url = astroSite`,
+              `const withSite = (defaults) => (astroSite && defaults && !defaults.url ? { ...defaults, url: astroSite } : defaults)`,
+              `const userDefaults = config.defaults || {}`,
+              `config.defaults = typeof userDefaults === 'function' ? async () => withSite(await userDefaults()) : withSite(userDefaults)`,
               `if (!config.isProd) config.isProd = defaultIsProd`,
               `export const { getData, getMetasData, getStructuredData } = createSeoUtils(config)`,
             ].join('\n')
@@ -61,5 +62,5 @@ export default function tndSeo(options: TndSeoOptions = {}): AstroIntegration {
   }
 }
 
-export type { SeoUserConfig, SeoEntry, SeoData, SeoUtils, TndSeoOptions } from './types.js'
+export type { SeoUserConfig, DefaultsConfig, DefaultsInput, SeoEntry, SeoData, SeoContext, SeoUtils, TndSeoOptions } from './types.js'
 export { flattenEntry } from './utils.js'

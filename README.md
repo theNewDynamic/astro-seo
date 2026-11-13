@@ -50,6 +50,19 @@ export default {
 } satisfies SeoUserConfig
 ```
 
+**Defaults from a CMS.** `defaults` can also be a function, sync or async. It's called once, on the first page rendered, and its result is reused. Use it instead of a top-level `await` when the defaults are fetched: `seo.config.ts` loads with the page modules, and Cloudflare Workers forbid network requests during module loading, so a top-level fetch makes on-demand pages fail with a 500.
+
+```ts
+import { getSettings } from '@data/site'
+
+export default {
+  defaults: async () => {
+    const site = await getSettings()
+    return { title: site.title, description: site.description, image: site.image }
+  },
+} satisfies SeoUserConfig
+```
+
 **In your layout**
 ```astro
 ---
@@ -68,7 +81,7 @@ The package works with flexible entry shapes — you don't need all fields. Here
   title?: string          // Page title
   description?: string    // Meta description
   image?: string          // OG image URL or object
-  url?: string            // Canonical URL
+  url?: string            // Page URL (falls back to Astro.url.pathname)
 }
 ```
 
