@@ -78,10 +78,10 @@ export const makeGetData = (config: SeoUserConfig = {}) => {
     const isPrivate = seoPrivate || !(isProd?.() ?? true)
     const canonical = seoCanonical || url
 
-    // Title: seo > entry > defaults > "Website"
+    // Title: seo > entry > defaults > "Website". An empty entry title falls back too.
     title = seoTitle
       ? seoTitle
-      : title !== 'Website'
+      : title && title !== 'Website'
       ? escapeString(title as string)
       : defaultsTitle || 'Website'
 
